@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Write 7+ · IELTS Writing</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg: #f6f5f1;
+            --card: #fff;
+            --ink: #1c1c1e;
+            --muted: #62656b;
+            --line: #e3e1db;
+            --soft: #f0efea;
+            --accent: #1f5eff;
+            --accent-soft: #e7edff;
+            --good: #12783d;
+            --good-soft: #e3f4ea;
+            --bad: #b3261e;
+            --bad-soft: #fdeceb;
+            --warn-soft: #fff4d6;
+            --p1: #2f6fe0;
+            --p2: #e0782f;
+            --p3: #22956a;
+            --p4: #9a4fd6;
+            --p5: #d6455f;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif
+        }
+
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 16px
+        }
+
+        .top {
+            background: var(--card);
+            border-bottom: 1px solid var(--line)
+        }
+
+        .topin {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 16px;
+            flex-wrap: wrap
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -.02em
+        }
+
+        .brand b {
+            color: var(--accent)
+        }
+
+        .tabs {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--card);
+            border-bottom: 1px solid var(--line)
+        }
+
+        .tabs .wrap {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            padding: 8px 16px
+        }
+
+        .tabs button {
+            background: none;
+            color: var(--muted);
+            border: 0;
+            font: 600 14px inherit;
+            padding: 8px 12px;
+            border-radius: 999px;
+            white-space: nowrap;
+            cursor: pointer
+        }
+
+        .tabs button.on {
+            background: var(--accent-soft);
+            color: var(--accent)
+        }
+
+        main.wrap {
+            padding: 20px 16px 90px
+        }
+
+        .tab {
+            display: none
+        }
+
+        .tab.on {
+            display: block
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 20px;
+            margin: 0 0 18px
+        }
+
+        h1 {
+            font-size: 28px;
+            line-height: 1.2;
+            margin: 0 0 8px
+        }
+
+        .btn {
+            font: 600 15px inherit;
+            background: var(--accent);
+            color: #fff;
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            cursor: pointer
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent)
+        }
+
+        .btn.sm {
+            font-size: 13px;
+            padding: 6px 11px;
+            border-radius: 8px
+        }
+
+        .days {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr))
+        }
+
+        .dcard {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: left;
+            cursor: pointer;
+            font: inherit;
+            color: inherit
+        }
+
+        .dcard.done {
+            background: var(--good-soft);
+            border-color: transparent
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 220px;
+            background: var(--soft);
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 14px;
+            font: 16px/1.7 inherit;
+            resize: vertical
+        }
+
+        .wbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin: 10px 0
+        }
+
+        .timer {
+            font: 700 22px ui-monospace, monospace;
+            min-width: 76px
+        }
+
+        .wc {
+            margin-left: auto;
+            font-weight: 700;
+            font-size: 14px
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top">
+        <div class="topin wrap">
+            <div class="brand">Write<b>7+</b> · IELTS Writing</div>
+            <div id="userInfoBadge" style="font-size:13px; font-weight:600; color:var(--muted);">Yuklanmoqda...</div>
+        </div>
+    </header>
+
+    <nav class="tabs">
+        <div class="wrap" id="tabs">
+            <button data-tab="home" class="on">Bugungi dars</button>
+            <button data-tab="plan">30 kunlik reja</button>
+        </div>
+    </nav>
+
+    <main class="wrap">
+        <section class="tab on" id="tab-home">
+            <div class="card" id="todayCard">
+                <h1 id="todayTitle">1-kun: Know the test</h1>
+                <p id="todayGoal" style="color:var(--muted);">Topshiriq turlari bilan tanishish.</p>
+                <div id="todayWriter"></div>
+                <div style="margin-top:16px;">
+                    <button class="btn" id="markDoneBtn">Kunni yakunlash</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="tab" id="tab-plan">
+            <div class="card">
+                <h1>30 kunlik kurs rejasi</h1>
+                <div class="days" id="planDaysList" style="margin-top:14px;"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const S = {
+            get(k, d) {try {const v = localStorage.getItem('w7_' + k); return v == null ? d : JSON.parse(v)} catch (e) {return d} },
+            set(k, v) {try {localStorage.setItem('w7_' + k, JSON.stringify(v))} catch (e) { } }
+        };
+
+        let DAYS = [
+            {day: 1, t: "Know the test", g: "Understand how you are scored and recognise every essay type.", q: "Write two paraphrases of each sentence:\n1. Some people think that the government should pay for all university education.\n2. Many young people leave rural areas to live in cities."},
+            {day: 2, t: "Opinion introductions", g: "Write an introduction with a clear position.", q: "Write an introduction for an Opinion essay."}
+        ];
+
+        for (let i = 3; i <= 30; i++) {
+            DAYS.push({day: i, t: `${i}-kunlik dars mashg'uloti`, g: "IELTS Writing amaliyoti.", q: "Berilgan topshiriq bo'yicha insho yozing..."});
+        }
+
+        let activeDayIdx = 0;
+        const tg = window.Telegram?.WebApp;
+        if (tg) tg.expand();
+
+        let tgUser = tg?.initDataUnsafe?.user;
+        let STUDENT_ID = tgUser ? String(tgUser.id) : (localStorage.getItem('w7_user_id') || 'local_' + Math.random().toString(36).substring(2, 8));
+        localStorage.setItem('w7_user_id', STUDENT_ID);
+
+        function getUserProfile() {
+            if (tgUser) {
+                return {
+                    name: `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Telegram Foydalanuvchisi',
+                    telegramId: String(tgUser.id),
+                    username: tgUser.username || ''
+                };
+            }
+            return {
+                name: 'Sayt Foydalanuvchisi',
+                telegramId: 'Brauzerdan',
+                username: ''
+            };
+        }
+
+        document.getElementById('userInfoBadge').textContent = `O'quvchi: ${getUserProfile().name}`;
+
+        // Tablar almashinuvi
+        document.querySelectorAll('#tabs button').forEach(b => {
+            b.addEventListener('click', () => {
+                document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('on'));
+                document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+                b.classList.add('on');
+                document.getElementById('tab-' + b.dataset.tab).classList.add('on');
+                syncWithServer(`Bo'limga o'tdi: ${b.textContent}`);
+            });
+        });
+
+        function renderDay(idx) {
+            activeDayIdx = idx;
+            const d = DAYS[idx];
+            document.getElementById('todayTitle').textContent = `${d.day}-kun: ${d.t}`;
+            document.getElementById('todayGoal').textContent = d.g;
+
+            const wBox = document.getElementById('todayWriter');
+            const savedText = S.get('w_d_' + d.day, '');
+            wBox.innerHTML = `
+    <div style="font-weight:600; margin:10px 0;">Topshiriq:</div>
+    <div style="background:var(--soft); padding:12px; border-radius:8px; white-space:pre-wrap; margin-bottom:12px;">${d.q}</div>
+    <div class="wbar">
+      <span class="timer">40:00</span>
+      <span class="wc" id="wordCount">0 so'z</span>
+    </div>
+    <textarea id="essayInput" placeholder="Reja tuzing va bu yerga inshoni yozing...">${savedText}</textarea>
+  `;
+
+            const ta = document.getElementById('essayInput');
+            const wc = document.getElementById('wordCount');
+
+            const updateCount = () => {
+                const n = (ta.value.trim().match(/\S+/g) || []).length;
+                wc.textContent = n + " so'z";
+                S.set('w_d_' + d.day, ta.value);
+            };
+            ta.addEventListener('input', () => {
+                updateCount();
+                syncWithServer(`Insho yozmoqda (${d.day}-kun)`);
+            });
+            updateCount();
+        }
+
+        function renderPlan() {
+            const pList = document.getElementById('planDaysList');
+            const doneMap = S.get('done_map', {});
+            pList.innerHTML = DAYS.map((d, i) => `
+    <button class="dcard ${doneMap[d.day] ? 'done' : ''}" onclick="selectDay(${i})">
+      <div style="font-size:12px; color:var(--muted);">KUN ${d.day} ${doneMap[d.day] ? '✓' : ''}</div>
+      <div style="font-weight:700; font-size:14px; margin-top:4px;">${d.t}</div>
+    </button>
+  `).join('');
+        }
+
+        function selectDay(i) {
+            renderDay(i);
+            document.querySelector('[data-tab="home"]').click();
+        }
+
+        document.getElementById('markDoneBtn').addEventListener('click', () => {
+            const d = DAYS[activeDayIdx];
+            const doneMap = S.get('done_map', {});
+            doneMap[d.day] = !doneMap[d.day];
+            S.set('done_map', doneMap);
+            renderPlan();
+            syncWithServer(`Kun holatini o'zgartirdi: ${d.day}-kun`);
+            alert(doneMap[d.day] ? "Kun muvaffaqiyatli yakunlandi!" : "Kun belgisi bekor qilindi.");
+        });
+
+        // Server bilan sinxronlash va BAN tekshiruvi
+        let syncTimeout = null;
+        function syncWithServer(logAction = null) {
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(async () => {
+                const localData = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('w7_')) {
+                        try {localData[key] = JSON.parse(localStorage.getItem(key));}
+                        catch (e) {localData[key] = localStorage.getItem(key);}
+                    }
+                }
+
+                const payload = {
+                    userId: STUDENT_ID,
+                    userInfo: getUserProfile(),
+                    completedDaysCount: Object.values(S.get('done_map', {})).filter(Boolean).length,
+                    currentActiveTab: document.querySelector('.tab.on')?.id || 'home',
+                    data: localData,
+                    logAction: logAction
+                };
+
+                try {
+                    const res = await fetch('/api/sync', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (data.banned) {
+                        document.body.innerHTML = `
+          <div style="display:flex; height:100vh; align-items:center; justify-content:center; text-align:center; padding:20px; font-family:sans-serif;">
+            <div>
+              <h1 style="color:#ef4444; font-size:32px;">🚫 Kirish Cheklandi</h1>
+              <p style="font-size:16px; color:#666;">Siz ma'muriyat tomonidan tizimdan chetlashtirilgansiz (BAN)!</p>
+            </div>
+          </div>
+        `;
+                    }
+                } catch (e) {
+                    console.log('Sinxronlash xatosi:', e);
+                }
+            }, 1200);
+        }
+
+        // Kontent va Ranglarni serverdan yuklash
+        async function loadServerCustomizations() {
+            try {
+                const res = await fetch('/api/content');
+                if (!res.ok) return;
+                const cms = await res.json();
+
+                if (cms.theme) {
+                    if (cms.theme.accent) document.documentElement.style.setProperty('--accent', cms.theme.accent);
+                    if (cms.theme.bg) document.documentElement.style.setProperty('--bg', cms.theme.bg);
+                    if (cms.theme.card) document.documentElement.style.setProperty('--card', cms.theme.card);
+                }
+
+                if (cms.days && cms.days.length > 0) {
+                    cms.days.forEach((cd, idx) => {
+                        if (DAYS[idx]) {
+                            if (cd.t) DAYS[idx].t = cd.t;
+                            if (cd.q) DAYS[idx].q = cd.q;
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log(e);
+            } finally {
+                renderDay(0);
+                renderPlan();
+            }
+        }
+
+        window.addEventListener('load', () => {
+            loadServerCustomizations();
+            syncWithServer('Sahifani ochdi');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="utf-8">
+    <title>Boshqaruv & Sozlamalar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --card: #151d30;
+            --line: #222f4c;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --good: #22c55e;
+            --bad: #ef4444;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 16px;
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+            overflow-x: auto;
+        }
+
+        .nav-tabs button {
+            background: var(--card);
+            color: var(--muted);
+            border: 1px solid var(--line);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .nav-tabs button.active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: #0b0f19;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #000;
+            border: 0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-del {
+            background: var(--bad);
+            color: #fff;
+        }
+
+        .btn-ban {
+            background: #eab308;
+            color: #000;
+        }
+
+        #authGate {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .auth-box {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .log-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--line);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="authGate">
+        <div class="auth-box">
+            <h3 style="margin-top:0;">Maxfiy Kodni Kiriting</h3>
+            <input type="password" id="passCode" placeholder="Kod..." style="text-align:center; margin: 12px 0;">
+            <button class="btn" style="width:100%;" onclick="login()">Kirish</button>
+            <p id="errText" style="color:var(--bad); display:none; margin:8px 0 0;">Kod noto‘g‘ri!</p>
+        </div>
+    </div>
+
+    <div class="wrap" id="mainContent" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2 style="margin:0; color:var(--accent);">Boshqaruv & Sozlash</h2>
+            <div>
+                <button class="btn" style="background:var(--good); color:#fff;" onclick="saveContent()">💾
+                    Saqlash</button>
+                <button class="btn btn-del" onclick="logout()">Chiqish</button>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="active" onclick="switchTab('tab-users', event)">Foydalanuvchilar (Boshqaruv)</button>
+            <button onclick="switchTab('tab-design', event)">Dizayn (Sozlama)</button>
+            <button onclick="switchTab('tab-days', event)">Kunlar & Testlar</button>
+            <button onclick="switchTab('tab-logs', event)">Loglar</button>
+        </div>
+
+        <!-- FOYDALANUVCHILAR VA BAN -->
+        <div id="tab-users" class="tab-content active">
+            <div id="usersList">Yuklanmoqda...</div>
+        </div>
+
+        <!-- DIZAYN -->
+        <div id="tab-design" class="tab-content">
+            <div class="card">
+                <h3>Ranglar palitrasi</h3>
+                <label>Asosiy rang (Accent):</label>
+                <input type="color" id="thm_accent" style="height:40px; margin-bottom:10px;">
+                <label>Orqa fon:</label>
+                <input type="color" id="thm_bg" style="height:40px; margin-bottom:10px;">
+                <label>Kartochkalar foni:</label>
+                <input type="color" id="thm_card" style="height:40px;">
+            </div>
+        </div>
+
+        <!-- KUNLAR -->
+        <div id="tab-days" class="tab-content">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between;">
+                    <h3>Darslar & Testlar</h3>
+                    <button class="btn" onclick="addDay()">+ Kun qo‘shish</button>
+                </div>
+                <div id="daysList"></div>
+            </div>
+        </div>
+
+        <!-- LOGLAR -->
+        <div id="tab-logs" class="tab-content">
+            <div class="card">
+                <h3>Harakatlar Tarixi</h3>
+                <table class="log-table">
+                    <tbody id="logsList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let CODE = localStorage.getItem('access_code') || '';
+        let DATA = {users: [], logs: [], content: {}, banned: []};
+
+        function switchTab(id, e) {
+            document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (e && e.target) e.target.classList.add('active');
+        }
+
+        async function login() {
+            const inp = document.getElementById('passCode').value.trim();
+            await loadData(inp);
+        }
+
+        function logout() {
+            localStorage.removeItem('access_code');
+            location.reload();
+        }
+
+        async function loadData(c) {
+            try {
+                const res = await fetch('/api/admin/data', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({code: c || CODE})
+                });
+                if (!res.ok) {
+                    document.getElementById('errText').style.display = 'block';
+                    return;
+                }
+                CODE = c || CODE;
+                localStorage.setItem('access_code', CODE);
+                document.getElementById('authGate').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+                DATA = await res.json();
+                renderUsers();
+                renderDesign();
+                renderDays();
+                renderLogs();
+            } catch (e) {console.error(e);}
+        }
+
+        function renderUsers() {
+            const uList = document.getElementById('usersList');
+            uList.innerHTML = DATA.users.map(u => {
+                const isBanned = DATA.banned.includes(String(u.userId));
+                const writings = Object.entries(u.data || {})
+                    .filter(([k, v]) => k.startsWith('w7_w_') && typeof v === 'string' && v.trim() !== '')
+                    .map(([k, v]) => '<b>' + k.replace('w7_w_', 'Topshiriq: ') + ':</b>\\n' + v)
+                    .join('\\n---\\n');
+
+                return `
+          <div class="card" style="${isBanned ? 'border:1px solid var(--bad); opacity:0.8;' : ''}">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <b style="font-size:16px;">${u.userInfo?.name || 'Nomaʼlum'}</b>
+                <div style="font-size:12px; color:var(--muted);">ID: ${u.userId} | TG: @${u.userInfo?.username || '-'}</div>
+              </div>
+              <button class="btn ${isBanned ? 'btn-ban' : 'btn-del'}" onclick="toggleBan('${u.userId}')">
+                ${isBanned ? '✅ Blokdan chiqarish' : '🚫 Chetlashtirish (BAN)'}
+              </button>
+            </div>
+            <div style="margin-top:8px; font-size:13px;">Bajarilgan: ${u.completedDaysCount} kun | Oxirgi faollik: ${u.lastSeen}</div>
+            <div style="background:#0b0f19; border:1px solid var(--line); border-radius:6px; padding:10px; max-height:140px; overflow-y:auto; font-size:13px; font-family:monospace; white-space:pre-wrap; margin-top:8px;">${writings || "Hali yozilmagan..."}</div>
+          </div>
+        `;
+            }).join('') || '<p>Foydalanuvchilar yo‘q</p>';
+        }
+
+        async function toggleBan(targetId) {
+            if (!confirm('Ushbu foydalanuvchi holatini o‘zgartirmoqchimisiz?')) return;
+            const res = await fetch('/api/admin/toggle-ban', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: CODE, targetUserId: targetId})
+            });
+            if (res.ok) {
+                const d = await res.json();
+                DATA.banned = d.banned;
+                renderUsers();
+            }
+        }
+
+        function renderDesign() {
+            const th = DATA.content.theme || {};
+            document.getElementById('thm_accent').value = th.accent || '#1f5eff';
+            document.getElementById('thm_bg').value = th.bg || '#f6f5f1';
+            document.getElementById('thm_card').value = th.card || '#ffffff';
+        }
+
+        function renderDays() {
+            const dList = document.getElementById('daysList');
+            dList.innerHTML = (DATA.content.days || []).map((d, i) => `
+        <div style="border:1px solid var(--line); border-radius:8px; padding:10px; margin-top:8px;">
+          <b>Kun ${i + 1}</b>
+          <input type="text" value="${d.t || ''}" onchange="DATA.content.days[${i}].t=this.value" placeholder="Mavzu...">
+          <textarea style="margin-top:4px;" rows="2" onchange="DATA.content.days[${i}].q=this.value" placeholder="Savol...">${d.q || ''}</textarea>
+        </div>
+      `).join('');
+        }
+
+        function addDay() {
+            DATA.content.days = DATA.content.days || [];
+            DATA.content.days.push({day: DATA.content.days.length + 1, t: "Yangi mavzu", q: "Yangi topshiriq savoli"});
+            renderDays();
+        }
+
+        function renderLogs() {
+            document.getElementById('logsList').innerHTML = DATA.logs.map(l => `
+        <tr>
+          <td style="color:var(--muted); font-family:monospace; width:70px;">${l.time}</td>
+          <td><b>${l.name}</b>: ${l.action}</td>
+        </tr>
+      `).join('');
+        }
+
+        async function saveContent() {
+            DATA.content.theme = {
+                accent: document.getElementById('thm_accent').value,
+                bg: document.getElementById('thm_bg').value,
+                card: document.getElementById('thm_card').value
+            };
+
+            const res = await fetch('/api/admin/save-content', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: CODE, content: DATA.content})
+            });
+
+            if (res.ok) alert('Barcha sozlamalar muvaffaqiyatli saqlandi!');
+        }
+
+        if (CODE) loadData(CODE);
+    </script>
+</body>
+
+</html>
