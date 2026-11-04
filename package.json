@@ -1,9 +1,12 @@
 {
-  "name": "ielts-writing-mini-app",
+  "name": "ielts-app",
   "version": "1.0.0",
+  "description": "IELTS 30-day challenge app",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
